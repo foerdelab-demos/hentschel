@@ -27,6 +27,21 @@
     window.addEventListener('scroll', updateHeaderState, { passive: true });
     updateHeaderState();
 
+    // Smooth scroll for anchor links (with fixed-header offset)
+    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            var targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            var target = document.querySelector(targetId);
+            if (target) {
+                e.preventDefault();
+                var headerHeight = siteHeader ? siteHeader.offsetHeight : 0;
+                var targetPosition = target.getBoundingClientRect().top + window.scrollY - headerHeight - 20;
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+            }
+        });
+    });
+
     // Mobile menu toggle
     if (navToggle && siteNav) {
         navToggle.addEventListener('click', function () {
@@ -103,8 +118,9 @@
         const lightboxInner  = document.createElement('div');
         lightboxInner.className = 'lightbox__inner';
 
-        const lightboxImage  = document.createElement('div');
+        const lightboxImage  = document.createElement('img');
         lightboxImage.className = 'lightbox__image';
+        lightboxImage.alt = '';
 
         const lightboxCaption = document.createElement('p');
         lightboxCaption.className = 'lightbox__caption';
@@ -134,10 +150,12 @@
                 justify-content: center;
                 padding: 2rem;
                 opacity: 0;
+                pointer-events: none;
                 transition: opacity 0.3s ease;
             }
             .lightbox.is-visible {
                 opacity: 1;
+                pointer-events: auto;
             }
             .lightbox__inner {
                 max-width: 900px;
@@ -150,7 +168,8 @@
             }
             .lightbox__image {
                 width: 100%;
-                aspect-ratio: 4/3;
+                max-height: 80vh;
+                object-fit: contain;
                 background-color: #DDD6C8;
             }
             .lightbox__caption {
@@ -183,9 +202,13 @@
         `;
         document.head.appendChild(lightboxStyle);
 
-        function openLightbox(caption) {
+        function openLightbox(caption, imageSrc) {
             lightbox.hidden = false;
             lightboxCaption.textContent = caption;
+            if (imageSrc) {
+                lightboxImage.src = imageSrc.replace(/w=\d+/, 'w=1200').replace(/h=\d+/, 'h=900');
+                lightboxImage.alt = caption;
+            }
             document.body.style.overflow = 'hidden';
             // Trigger transition after display
             requestAnimationFrame(function () {
@@ -210,15 +233,17 @@
 
             const captionEl = item.querySelector('.gallery__caption');
             const caption   = captionEl ? captionEl.textContent.trim() : '';
+            const imageEl   = item.querySelector('.gallery__image');
+            const imageSrc  = imageEl ? imageEl.src : '';
 
             item.addEventListener('click', function () {
-                openLightbox(caption);
+                openLightbox(caption, imageSrc);
             });
 
             item.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    openLightbox(caption);
+                    openLightbox(caption, imageSrc);
                 }
             });
         });
@@ -245,8 +270,10 @@
 
     if (contactForm) {
         contactForm.addEventListener('submit', function (e) {
-            const inputs = contactForm.querySelectorAll('[required]');
-            let isValid  = true;
+            e.preventDefault();
+
+            var inputs = contactForm.querySelectorAll('[required]');
+            var isValid = true;
 
             inputs.forEach(function (input) {
                 input.style.borderColor = '';
@@ -260,7 +287,7 @@
                 }
 
                 if (input.type === 'email' && input.value.trim()) {
-                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!emailPattern.test(input.value.trim())) {
                         isValid = false;
                         input.style.borderColor = '#A0522D';
@@ -270,10 +297,25 @@
             });
 
             if (!isValid) {
-                e.preventDefault();
-                const firstInvalid = contactForm.querySelector('[aria-invalid="true"]');
+                var firstInvalid = contactForm.querySelector('[aria-invalid="true"]');
                 if (firstInvalid) firstInvalid.focus();
+                return;
             }
+
+            // Show success feedback
+            var submitBtn = contactForm.querySelector('[type="submit"]');
+            var originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Wird gesendet…';
+            submitBtn.disabled = true;
+
+            // Simulate send (replace with actual endpoint when available)
+            setTimeout(function () {
+                contactForm.innerHTML =
+                    '<div class="form-success">' +
+                    '<h3 class="form-success__title">Vielen Dank f\u00FCr Ihre Anfrage!</h3>' +
+                    '<p class="form-success__text">Wir melden uns schnellstm\u00F6glich pers\u00F6nlich bei Ihnen.</p>' +
+                    '</div>';
+            }, 800);
         });
 
         // Clear validation state on input

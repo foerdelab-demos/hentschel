@@ -102,7 +102,9 @@
 html {
     font-size: 16px;
     scroll-behavior: smooth;
+    scroll-padding-top: 100px;
     -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -114,7 +116,6 @@ body {
     background-color: var(--color-bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
 }
 
 img, video, svg {
@@ -227,6 +228,7 @@ p + p {
     text-transform: uppercase;
     padding: var(--space-4) var(--space-8);
     border: 1px solid transparent;
+    cursor: pointer;
     transition:
         background-color var(--transition-base),
         color var(--transition-base),
@@ -276,7 +278,6 @@ p + p {
     background-color: transparent;
     transition:
         background-color var(--transition-slow),
-        padding-block var(--transition-base),
         border-bottom-color var(--transition-base);
     border-bottom: 1px solid transparent;
 }
@@ -284,7 +285,7 @@ p + p {
 .site-header.is-scrolled {
     background-color: rgba(248, 245, 240, 0.96);
     border-bottom-color: var(--color-border);
-    padding-block: var(--space-4);
+    padding-block: var(--space-5);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
@@ -419,8 +420,15 @@ p + p {
 }
 
 /* =============================================================
-   7. IMAGE PLACEHOLDERS
+   7. IMAGE PLACEHOLDERS (fallback) & IMAGES
    ============================================================= */
+.hero__image,
+.about__image,
+.service-card__image,
+.gallery__image {
+    display: block;
+}
+
 [class*="placeholder"] {
     width: 100%;
     height: 100%;
@@ -465,7 +473,14 @@ p + p {
     background-color: var(--color-surface-alt);
 }
 
-.hero__image-placeholder::before {
+.hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero__image-placeholder::before,
+.hero__figure::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -562,6 +577,12 @@ p + p {
     background-color: var(--color-limestone);
 }
 
+.about__image {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+}
+
 .about__stat-block {
     border-top: 1px solid var(--color-border);
     padding-top: var(--space-6);
@@ -604,17 +625,26 @@ p + p {
 
 .services__grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background-color: var(--color-border);
-    border: 1px solid var(--color-border);
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--space-3);
 }
+
+/* Desktop: Artistic staggered layout across 12 columns */
+.service-card:nth-child(1)  { grid-column: 1 / 6; }     /* 5 cols, left */
+.service-card:nth-child(2)  { grid-column: 6 / 13; }     /* 7 cols, right */
+.service-card:nth-child(3)  { grid-column: 1 / 8; }      /* 7 cols, left */
+.service-card:nth-child(4)  { grid-column: 8 / 13; }     /* 5 cols, right */
+.service-card:nth-child(5)  { grid-column: 2 / 7; }      /* 5 cols, offset left */
+.service-card:nth-child(6)  { grid-column: 7 / 13; }     /* 6 cols, right */
+.service-card:nth-child(7)  { grid-column: 1 / 7; }      /* 6 cols, left */
+.service-card:nth-child(8)  { grid-column: 7 / 12; }     /* 5 cols, offset right */
 
 .service-card {
     background-color: var(--color-surface);
     display: flex;
     flex-direction: column;
     transition: background-color 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+    border: 1px solid var(--color-border);
 }
 
 .service-card:hover {
@@ -632,7 +662,15 @@ p + p {
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.service-card:hover .service-card__image-placeholder {
+.service-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.service-card:hover .service-card__image-placeholder,
+.service-card:hover .service-card__image {
     transform: scale(1.03);
 }
 
@@ -673,15 +711,6 @@ p + p {
     line-height: var(--leading-relaxed);
     color: var(--color-text-muted);
     margin-top: var(--space-4);
-}
-
-/* Last row: 2 remaining cards span wider in 3-col grid */
-.service-card:nth-last-child(2):nth-child(3n + 1) {
-    grid-column: span 1;
-}
-
-.services__grid > .service-card:last-child:nth-child(3n + 2) {
-    grid-column: span 1;
 }
 
 /* =============================================================
@@ -772,19 +801,28 @@ p + p {
 
 .gallery__placeholder {
     width: 100%;
+    height: 100%;
     background-color: var(--color-limestone);
     transition: transform var(--transition-slow);
 }
 
-.gallery__item--landscape .gallery__placeholder {
+.gallery__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.gallery__item--landscape {
     aspect-ratio: 4 / 3;
 }
 
-.gallery__item--portrait .gallery__placeholder {
+.gallery__item--portrait {
     aspect-ratio: 3 / 4;
 }
 
-.gallery__item:hover .gallery__placeholder {
+.gallery__item:hover .gallery__placeholder,
+.gallery__item:hover .gallery__image {
     transform: scale(1.03);
 }
 
@@ -977,6 +1015,22 @@ p + p {
     text-underline-offset: 2px;
 }
 
+.form-success {
+    text-align: center;
+    padding: var(--space-12) var(--space-4);
+}
+
+.form-success__title {
+    font-size: clamp(var(--text-xl), 3vw, var(--text-2xl));
+    margin-bottom: var(--space-3);
+}
+
+.form-success__text {
+    font-size: var(--text-md);
+    color: var(--color-text-muted);
+    line-height: var(--leading-base);
+}
+
 /* =============================================================
    14. FOOTER
    ============================================================= */
@@ -1091,8 +1145,17 @@ p + p {
 /* Large tablets & small desktops */
 @media (max-width: 1200px) {
     .services__grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(8, 1fr);
     }
+
+    .service-card:nth-child(1)  { grid-column: 1 / 5; }
+    .service-card:nth-child(2)  { grid-column: 5 / 9; }
+    .service-card:nth-child(3)  { grid-column: 1 / 6; }
+    .service-card:nth-child(4)  { grid-column: 6 / 9; }
+    .service-card:nth-child(5)  { grid-column: 1 / 4; }
+    .service-card:nth-child(6)  { grid-column: 4 / 9; }
+    .service-card:nth-child(7)  { grid-column: 1 / 5; }
+    .service-card:nth-child(8)  { grid-column: 5 / 9; }
 
     .values__grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1111,6 +1174,10 @@ p + p {
     }
 
     .about__image-placeholder {
+        height: 320px;
+    }
+
+    .about__image {
         height: 320px;
     }
 
@@ -1133,13 +1200,14 @@ p + p {
 }
 
 /* Mobile */
-@media (max-width: 680px) {
+@media (max-width: 900px) {
     .site-nav {
         position: fixed;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
         background-color: var(--color-bg);
         display: flex;
         align-items: center;
@@ -1175,6 +1243,7 @@ p + p {
 
     .nav-toggle {
         display: flex;
+        position: relative;
     }
 
     .about,
@@ -1187,6 +1256,10 @@ p + p {
 
     .services__grid {
         grid-template-columns: 1fr;
+    }
+
+    .service-card:nth-child(n) {
+        grid-column: 1 / -1;
     }
 
     .values__grid {

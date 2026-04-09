@@ -25,7 +25,7 @@ include __DIR__ . '/partials/nav.php';
             </div>
         </div>
         <div class="hero__figure" aria-hidden="true">
-            <div class="hero__image-placeholder"></div>
+            <img class="hero__image" src="https://images.unsplash.com/photo-1772974971805-ccc0fda18396?w=1200&h=800&fit=crop&q=80" alt="Prunkvolles Kuppelinterieur mit Fresken und Goldverzierungen" loading="eager" width="1200" height="800">
         </div>
     </section>
 
@@ -57,7 +57,7 @@ include __DIR__ . '/partials/nav.php';
 
                 <div class="about__figures reveal reveal--delay-2" aria-hidden="true">
                     <div class="about__figure-block">
-                        <div class="about__image-placeholder"></div>
+                        <img class="about__image" src="https://images.unsplash.com/photo-1699084261257-21e9a054ca3a?w=800&h=1000&fit=crop&q=80" alt="Das Bernsteinzimmer – meisterhafte Vergoldung und Handwerkskunst" loading="lazy" width="800" height="1000">
                     </div>
                     <div class="about__stat-block">
                         <p class="about__stat-number">1936</p>
@@ -88,7 +88,7 @@ include __DIR__ . '/partials/nav.php';
                 ?>
                 <article class="service-card reveal<?= $delayClass ?>" id="<?= htmlspecialchars($service['id']) ?>">
                     <div class="service-card__image-wrap" aria-hidden="true">
-                        <div class="service-card__image-placeholder"></div>
+                        <img class="service-card__image" src="<?= htmlspecialchars($service['image']) ?>" alt="<?= htmlspecialchars($service['image_alt']) ?>" loading="lazy" width="800" height="600">
                     </div>
                     <div class="service-card__body">
                         <span class="service-card__index"><?= str_pad($index + 1, 2, '0', STR_PAD_LEFT) ?></span>
@@ -153,17 +153,17 @@ include __DIR__ . '/partials/nav.php';
             <div class="gallery__grid" role="list">
                 <?php
                 $gallery_items = [
-                    ['label' => 'Marmorierung',        'aspect' => 'landscape'],
-                    ['label' => 'Vergoldung Detail',   'aspect' => 'portrait'],
-                    ['label' => 'Glättetechnik',       'aspect' => 'portrait'],
-                    ['label' => 'Fassmalerei',         'aspect' => 'landscape'],
-                    ['label' => 'Illusionsmalerei',    'aspect' => 'landscape'],
-                    ['label' => 'Patinierung',         'aspect' => 'portrait'],
+                    ['label' => 'Marmorierung',        'aspect' => 'landscape', 'image' => 'https://images.unsplash.com/photo-1750791007759-ae174e1e63cf?w=800&h=600&fit=crop&q=80', 'alt' => 'Marmortextur in warmen Orange- und Grautönen'],
+                    ['label' => 'Vergoldung Detail',   'aspect' => 'portrait',  'image' => 'https://images.unsplash.com/photo-1597310781652-78af3276ba5e?w=600&h=800&fit=crop&q=80', 'alt' => 'Goldener Vintage-Rahmen mit Verzierungen'],
+                    ['label' => 'Glättetechnik',       'aspect' => 'portrait',  'image' => 'https://images.unsplash.com/photo-1760784213068-6b6b4942b5e2?w=600&h=800&fit=crop&q=80', 'alt' => 'Glatte graue Steinoberfläche'],
+                    ['label' => 'Fassmalerei',         'aspect' => 'landscape', 'image' => 'https://images.unsplash.com/photo-1760383684490-05b553be72cc?w=800&h=600&fit=crop&q=80', 'alt' => 'Bemalte Decke mit Bogenfenstern'],
+                    ['label' => 'Illusionsmalerei',    'aspect' => 'landscape', 'image' => 'https://images.unsplash.com/photo-1759939875239-6239f87ddb3e?w=800&h=600&fit=crop&q=80', 'alt' => 'Kirchendecke mit Freskenmalerei'],
+                    ['label' => 'Patinierung',         'aspect' => 'portrait',  'image' => 'https://images.unsplash.com/photo-1718635310388-880694939769?w=600&h=800&fit=crop&q=80', 'alt' => 'Gold-blaues Wanddesign mit Patina'],
                 ];
                 foreach ($gallery_items as $i => $item):
                 ?>
                 <figure class="gallery__item gallery__item--<?= $item['aspect'] ?> reveal" role="listitem" aria-label="<?= htmlspecialchars($item['label']) ?>">
-                    <div class="gallery__placeholder" data-index="<?= $i + 1 ?>"></div>
+                    <img class="gallery__image" src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['alt']) ?>" loading="lazy" width="<?= $item['aspect'] === 'landscape' ? 800 : 600 ?>" height="<?= $item['aspect'] === 'landscape' ? 600 : 800 ?>">
                     <figcaption class="gallery__caption"><?= htmlspecialchars($item['label']) ?></figcaption>
                 </figure>
                 <?php endforeach; ?>

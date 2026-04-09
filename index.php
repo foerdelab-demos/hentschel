@@ -82,8 +82,11 @@ include __DIR__ . '/partials/nav.php';
             </div>
 
             <div class="services__grid">
-                <?php foreach ($services as $index => $service): ?>
-                <article class="service-card reveal" id="<?= htmlspecialchars($service['id']) ?>">
+                <?php foreach ($services as $index => $service):
+                    $delay = $index % 3; // stagger by column position
+                    $delayClass = $delay > 0 ? ' reveal--delay-' . $delay : '';
+                ?>
+                <article class="service-card reveal<?= $delayClass ?>" id="<?= htmlspecialchars($service['id']) ?>">
                     <div class="service-card__image-wrap" aria-hidden="true">
                         <div class="service-card__image-placeholder"></div>
                     </div>
